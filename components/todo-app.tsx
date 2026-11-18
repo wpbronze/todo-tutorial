@@ -57,12 +57,7 @@ export function TodoApp() {
   )
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-xs text-muted-foreground">
-        {canSave
-          ? "할 일은 이 브라우저에 저장됩니다"
-          : "이 브라우저에서는 할 일이 저장되지 않습니다"}
-      </p>
+    <div className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm">
       <Input
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
@@ -80,14 +75,30 @@ export function TodoApp() {
           ))}
         </TabsList>
       </Tabs>
+      {todos.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>
+              {todos.length}개 중 {completedCount}개 완료
+            </span>
+            <span>{Math.round((completedCount / todos.length) * 100)}%</span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${(completedCount / todos.length) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
       {visibleTodos.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
           {todos.length === 0
             ? "할 일이 없습니다"
             : "해당하는 할 일이 없습니다"}
-        </p>
+        </div>
       ) : (
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col divide-y rounded-lg border">
           {visibleTodos.map((todo) => (
             <TodoItem
               key={todo.id}
@@ -111,6 +122,11 @@ export function TodoApp() {
           </Button>
         </div>
       )}
+      <p className="text-center text-xs text-muted-foreground">
+        {canSave
+          ? "할 일은 이 브라우저에 저장됩니다"
+          : "이 브라우저에서는 할 일이 저장되지 않습니다"}
+      </p>
     </div>
   )
 }
@@ -157,7 +173,7 @@ function TodoItem({
   }
 
   return (
-    <li className="group flex min-h-11 items-center gap-3 rounded-lg px-2 hover:bg-muted/50">
+    <li className="group flex min-h-11 items-center gap-3 px-3 transition-colors hover:bg-muted/50">
       <Checkbox
         checked={todo.completed}
         onCheckedChange={onToggle}
